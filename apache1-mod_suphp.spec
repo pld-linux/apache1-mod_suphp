@@ -61,6 +61,7 @@ chmod 755 configure
 	--with-min-uid=500 \
 	--with-min-gid=1000 \
 	--with-apxs=%{apxs} \
+	--with-php=/usr/bin/php.cgi \
 	--disable-checkuid \
 	--disable-checkgid
 

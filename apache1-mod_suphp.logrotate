@@ -1,0 +1,8 @@
+/var/log/apache/suphp_log {
+    olddir /var/log/archiv/apache
+    postrotate
+	/etc/rc.d/init.d/apache graceful
+    endscript
+}
+
+

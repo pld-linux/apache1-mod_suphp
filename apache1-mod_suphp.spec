@@ -8,7 +8,7 @@ Summary:	Apache module: suPHP - execute PHP scripts with the permissions of thei
 Summary(pl):	Modu³ do apache: suPHP - uruchamianie skryptów PHP z uprawnieniami ich w³a¶cicieli
 Name:		apache1-mod_%{mod_name}
 Version:	0.5.2
-Release:	1.11
+Release:	1.12
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.suphp.org/download/%{mod_name}-%{version}.tar.gz
@@ -100,14 +100,10 @@ if grep -q '^Include conf\.d' /etc/apache/apache.conf; then
 	sed -i -e '
 		/^Include.*mod_%{mod_name}\.conf/d
 	' /etc/apache/apache.conf
-else
-	# they're still using old apache.conf
-	sed -i -e '
-		s,^Include.*mod_%{mod_name}\.conf,Include %{_sysconfdir}/conf.d/*_mod_%{mod_name}.conf,
-	' /etc/apache/apache.conf
-fi
-if [ -f /var/lock/subsys/apache ]; then
-	/etc/rc.d/init.d/apache restart 1>&2
+
+	if [ -f /var/lock/subsys/apache ]; then
+		/etc/rc.d/init.d/apache restart 1>&2
+	fi
 fi
 
 %files

@@ -8,7 +8,7 @@ Summary:	Apache module: suPHP - execute PHP scripts with the permissions of thei
 Summary(pl):	Modu³ do apache: suPHP - uruchamianie skryptów PHP z uprawnieniami ich w³a¶cicieli
 Name:		apache1-mod_%{mod_name}
 Version:	0.5.2
-Release:	1.4
+Release:	1.11
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.suphp.org/download/%{mod_name}-%{version}.tar.gz
@@ -43,6 +43,11 @@ modu³ w celu zmiany uid procesu uruchamiaj±cego interpreter PHP.
 
 %prep
 %setup -q -n %{mod_name}-%{version}
+
+# common GPL license
+rm -f doc/{de,en}/LICENSE
+# common Apache license
+rm -f doc/{de,en}/apache/LICENSE
 
 %build
 %{__aclocal}
@@ -107,7 +112,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README AUTHORS ChangeLog doc
+%doc AUTHORS ChangeLog doc/en doc/de
 %attr(4755,root,root) %{_sbindir}/suphp
 %attr(755,root,root) %{_pkglibdir}/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*

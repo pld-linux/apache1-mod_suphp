@@ -85,7 +85,7 @@ rm -rf $RPM_BUILD_ROOT
 %post
 %service -q apache restart
 
-%preun
+%postun
 if [ "$1" = "0" ]; then
 	%service -q apache restart
 fi

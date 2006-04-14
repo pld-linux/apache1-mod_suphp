@@ -83,15 +83,11 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/apache-mod_suphp
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ -f /var/lock/subsys/apache ]; then
-	/etc/rc.d/init.d/apache restart 1>&2
-fi
+%service -q apache restart
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/apache ]; then
-		/etc/rc.d/init.d/apache restart 1>&2
-	fi
+	%service -q apache restart
 fi
 
 # TODO remove the trigger, if no longer needed
@@ -102,9 +98,7 @@ if grep -q '^Include conf\.d' /etc/apache/apache.conf; then
 		/^Include.*mod_%{mod_name}\.conf/d
 	' /etc/apache/apache.conf
 
-	if [ -f /var/lock/subsys/apache ]; then
-		/etc/rc.d/init.d/apache restart 1>&2
-	fi
+	%service -q apache restart
 fi
 
 %files

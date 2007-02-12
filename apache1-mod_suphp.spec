@@ -5,7 +5,7 @@
 %define		mod_name	suphp
 %define 	apxs		/usr/sbin/apxs1
 Summary:	Apache module: suPHP - execute PHP scripts with the permissions of their owners
-Summary(pl):	Modu≥ do apache: suPHP - uruchamianie skryptÛw PHP z uprawnieniami ich w≥a∂cicieli
+Summary(pl.UTF-8):   Modu≈Ç do apache: suPHP - uruchamianie skrypt√≥w PHP z uprawnieniami ich w≈Ça≈õcicieli
 Name:		apache1-mod_%{mod_name}
 Version:	0.5.2
 Release:	1.12
@@ -35,11 +35,11 @@ their owners. It consists of an Apache module (mod_suphp) and a setuid
 root binary (suphp) that is called by the Apache module to change the
 uid of the process executing the PHP interpreter.
 
-%description -l pl
-suPHP jest narzÍdziem pozwalaj±cym na wykonywanie skryptÛw w PHP z
-uprawnieniami ich w≥a∂cicieli. Sk≥ada siÍ z modu≥u (mod_suphp) oraz
-programu (suphp) z ustawionym bitem suid, ktÛry uruchamiany jest przez
-modu≥ w celu zmiany uid procesu uruchamiaj±cego interpreter PHP.
+%description -l pl.UTF-8
+suPHP jest narzƒôdziem pozwalajƒÖcym na wykonywanie skrypt√≥w w PHP z
+uprawnieniami ich w≈Ça≈õcicieli. Sk≈Çada siƒô z modu≈Çu (mod_suphp) oraz
+programu (suphp) z ustawionym bitem suid, kt√≥ry uruchamiany jest przez
+modu≈Ç w celu zmiany uid procesu uruchamiajƒÖcego interpreter PHP.
 
 %prep
 %setup -q -n %{mod_name}-%{version}

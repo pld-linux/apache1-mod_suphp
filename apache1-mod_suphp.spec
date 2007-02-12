@@ -5,7 +5,7 @@
 %define		mod_name	suphp
 %define 	apxs		/usr/sbin/apxs1
 Summary:	Apache module: suPHP - execute PHP scripts with the permissions of their owners
-Summary(pl.UTF-8):   Moduł do apache: suPHP - uruchamianie skryptów PHP z uprawnieniami ich właścicieli
+Summary(pl.UTF-8):	Moduł do apache: suPHP - uruchamianie skryptów PHP z uprawnieniami ich właścicieli
 Name:		apache1-mod_%{mod_name}
 Version:	0.5.2
 Release:	1.12

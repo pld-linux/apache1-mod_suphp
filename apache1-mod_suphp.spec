@@ -12,7 +12,7 @@ Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.suphp.org/download/%{mod_name}-%{version}.tar.gz
-# Source0-md5:	337909e87027af124052baddddbd2994
+# Source0-md5:	7eb8ae29404392d9eb07c69d5242d716
 Source1:	%{name}.logrotate
 Source2:	%{name}.conf
 Source2:	%{name}-suphp.conf

@@ -7,22 +7,28 @@
 Summary:	Apache module: suPHP - execute PHP scripts with the permissions of their owners
 Summary(pl.UTF-8):	Moduł do apache: suPHP - uruchamianie skryptów PHP z uprawnieniami ich właścicieli
 Name:		apache1-mod_%{mod_name}
-Version:	0.5.2
-Release:	1.12
+Version:	0.6.1
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.suphp.org/download/%{mod_name}-%{version}.tar.gz
 # Source0-md5:	337909e87027af124052baddddbd2994
-Source1:	%{name}.conf
-Source2:	%{name}.logrotate
+Source1:	%{name}.logrotate
+Source2:	%{name}.conf
+Source2:	%{name}-suphp.conf
+Patch0:		%{name}-apr.patch
+Patch1:		%{name}-notallowed.patch
 URL:		http://www.suphp.org/
+BuildRequires:	%{apxs}
 BuildRequires:	apache1-devel >= 1.3.33-2
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	libstdc++-devel
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(triggerpostun):	%{apxs}
 Requires(triggerpostun):	grep
 Requires(triggerpostun):	sed >= 4.0
-Requires:	apache
+Requires:	apache1
 Requires:	php-cgi
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -43,17 +49,15 @@ moduł w celu zmiany uid procesu uruchamiającego interpreter PHP.
 
 %prep
 %setup -q -n %{mod_name}-%{version}
-
-# common GPL license
-rm -f doc/{de,en}/LICENSE
-# common Apache license
-rm -f doc/{de,en}/apache/LICENSE
+%patch0 -p1
+%patch1 -p1
 
 %build
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
-chmod 755 configure
+%{__automake}
+export APACHE_VERSION=$(rpm -q --qf '%%{version}' apache1-apxs)
 %configure \
 	%{?with_checkpath: --enable-checkpath} \
 	%{!?with_checkpath: --disable-checkpath} \
@@ -61,9 +65,10 @@ chmod 755 configure
 	--with-min-uid=500 \
 	--with-min-gid=1000 \
 	--with-apxs=%{apxs} \
-	--with-php=/usr/bin/php.cgi \
 	--disable-checkuid \
-	--disable-checkgid
+	--disable-checkgid \
+	--with-setid-mode=owner \
+	--with-logfile=/var/log/apache/suphp_log
 
 %{__make}
 
@@ -72,12 +77,13 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_pkglibdir},%{_sysconfdir}/conf.d}
 
 install src/suphp $RPM_BUILD_ROOT%{_sbindir}
-install src/apache/mod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/90_mod_%{mod_name}.conf
+install src/apache/.libs/mod_%{mod_name}.so $RPM_BUILD_ROOT%{_pkglibdir}
+install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/90_mod_%{mod_name}.conf
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{mod_name}.conf
 
 install -d $RPM_BUILD_ROOT/etc/logrotate.d
 # TODO: apache1-mod_suphp + trigger
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/apache-mod_suphp
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/logrotate.d/apache-mod_suphp
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -103,8 +109,9 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog doc/en doc/de
+%doc AUTHORS ChangeLog README doc
 %attr(4755,root,root) %{_sbindir}/suphp
-%attr(755,root,root) %{_pkglibdir}/*
+%attr(755,root,root) %{_pkglibdir}/*.so
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/conf.d/*_mod_%{mod_name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{mod_name}.conf

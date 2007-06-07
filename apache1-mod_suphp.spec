@@ -19,7 +19,7 @@ Source2:	%{name}-suphp.conf
 Patch0:		%{name}-apr.patch
 Patch1:		%{name}-notallowed.patch
 URL:		http://www.suphp.org/
-BuildRequires:	%{apxs}
+BuildRequires:	apache1-apxs
 BuildRequires:	apache1-devel >= 1.3.33-2
 BuildRequires:	autoconf
 BuildRequires:	automake

@@ -24,9 +24,6 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
-Requires(triggerpostun):	%{apxs}
-Requires(triggerpostun):	grep
-Requires(triggerpostun):	sed >= 4.0
 Requires:	apache1
 Requires:	php-cgi
 Conflicts:	logrotate < 3.7-4
@@ -57,7 +54,7 @@ moduł w celu zmiany uid procesu uruchamiającego interpreter PHP.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-export APACHE_VERSION=$(rpm -q --qf '%%{version}' apache1-apxs)
+export APACHE_VERSION=$(rpm -q --qf '%{V}' apache1-devel)
 %configure \
 	%{?with_checkpath: --enable-checkpath} \
 	%{!?with_checkpath: --disable-checkpath} \
@@ -82,8 +79,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/conf.d/90_mod_%{mod_name}.conf
 install %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/%{mod_name}.conf
 
 install -d $RPM_BUILD_ROOT/etc/logrotate.d
-# TODO: apache1-mod_suphp + trigger
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/logrotate.d/apache-mod_suphp
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/logrotate.d/apache1-mod_suphp
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -93,17 +89,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun
 if [ "$1" = "0" ]; then
-	%service -q apache restart
-fi
-
-# TODO remove the trigger, if no longer needed
-%triggerpostun -- %{name} <= 0.5.2-1
-if grep -q '^Include conf\.d' /etc/apache/apache.conf; then
-	%{apxs} -e -A -n %{mod_name} %{_pkglibdir}/mod_%{mod_name}.so 1>&2
-	sed -i -e '
-		/^Include.*mod_%{mod_name}\.conf/d
-	' /etc/apache/apache.conf
-
 	%service -q apache restart
 fi
 
